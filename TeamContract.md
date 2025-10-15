@@ -42,13 +42,20 @@ This contract sets out shared expectations and commitments for how our team will
 ---
 ## Conflict resolution
 
-* How will your team resolve conflicts? (Example: by listening to each other's side of the issue and attempting to reach a compromise. By consulting a TA or instructor as a team, if a resolution has not yet been reached.)
 
+* When a conflict arises, we agree to have an open dialog / conversation about it and discuss it. We will try our best to resolve these conflicts in person as it helps maintain a collegial atmosphere.
+* If a conflict becomes too big / the group is very split we agree to seek out a TA or professors advice / guidance. We all understand we may want different things but all want to succeed as a group.
+* We agree to always listen to each other when there is a disagreement. This involves letting each other speak and not interrupting, actively listening to others and compromise.
 ---
 
 ## Accountability
 
 * Reliability and accountability are also important aspects of teamwork. What are the responsibilities of each team member? (Example: completing their share of the work in a timely manner, seeking assistance from teammates/TAs/instructors when required, etc.)
+
+* We will all have different responsibilities in the project and despite our individual busy schedules we all need to contribute fairy and in a timely manner to complete the project.
+* Before any work is assigned we agree to look over it and raise any concerns we may have about it. Additionally, if we think our work is unfairly being distributed we agree to speak up about it as soon as possible.
+* We agree to frequently check in with each other and to be open to helping others. We all have busy schedules and we need to frequently be in contact about our abilities and needs.
+* If someone is falling fall behind we all agree that we can go to TAs and professors to help us on a more personal basis.
 
 ---
 
@@ -56,6 +63,5 @@ This contract sets out shared expectations and commitments for how our team will
 
 By signing below, we acknowledge that we have read, discussed, and agreed to these terms. We understand that this contract is binding for the duration of the course and may be revised with the agreement of all team members.
 
-Team Member Signatures:
+Team Member Signatures: Colin, Almer, Emery, Nameer, Nyle, Tony
 
-(type names here)
