@@ -50,8 +50,6 @@ This contract sets out shared expectations and commitments for how our team will
 
 ## Accountability
 
-* Reliability and accountability are also important aspects of teamwork. What are the responsibilities of each team member? (Example: completing their share of the work in a timely manner, seeking assistance from teammates/TAs/instructors when required, etc.)
-
 * We will all have different responsibilities in the project and despite our individual busy schedules we all need to contribute fairy and in a timely manner to complete the project.
 * Before any work is assigned we agree to look over it and raise any concerns we may have about it. Additionally, if we think our work is unfairly being distributed we agree to speak up about it as soon as possible.
 * We agree to frequently check in with each other and to be open to helping others. We all have busy schedules and we need to frequently be in contact about our abilities and needs.
