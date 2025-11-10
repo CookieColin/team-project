@@ -47,4 +47,18 @@ public class Recipe {
         return dietaryRestrictions;
     }
 
+    public void setName(String name) {this.name = name;}
+
+    public void setIngredients(ArrayList<String> ingredients) {this.ingredients = ingredients;}
+
+    public void setSteps(ArrayList<String> steps) {this.steps = steps;}
+
+    public void setPrepTime(int prepTime) {this.prepTime = prepTime;}
+
+    public void setCookTime(int cookTime) {this.cookTime = cookTime;}
+
+    public void setServings(int servings) {this.servings = servings;}
+
+    public void setDietaryRestrictions(String dietaryRestrictions) {this.dietaryRestrictions = dietaryRestrictions;}
+
 }
