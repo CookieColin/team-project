@@ -1,0 +1,50 @@
+{
+  "name": "Chef",
+  "recipes": [
+    {
+      "name": "Pasta",
+      "ingredients": [
+        "1 box of spaghetti",
+        "2 eggs",
+        "100g pancetta",
+        "50g parmesan cheese",
+        "Salt",
+        "Black pepper"
+      ],
+      "steps": [
+        "Boil water and cook spaghetti until al dente.",
+        "Fry pancetta until crispy.",
+        "Whisk eggs and parmesan together in a bowl.",
+        "Drain pasta and mix with pancetta.",
+        "Remove from heat and quickly stir in egg mixture.",
+        "Season with salt and pepper, then serve."
+      ],
+      "prepTime": 10,
+      "cookTime": 15,
+      "serving": 2,
+      "dietaryRestrictions": "Contains dairy, eggs, pork, and gluten"
+    },
+    {
+      "name": "Greek Salad",
+      "ingredients": [
+        "2 tomatoes",
+        "1 cucumber",
+        "1/2 red onion",
+        "100g feta cheese",
+        "50g olives",
+        "Olive oil",
+        "Oregano"
+      ],
+      "steps": [
+        "Chop tomatoes, cucumber, and onion into chunks.",
+        "Combine vegetables with olives and crumbled feta in a bowl.",
+        "Drizzle with olive oil and sprinkle with oregano.",
+        "Toss gently and serve chilled."
+      ],
+      "prepTime": 10,
+      "cookTime": 0,
+      "serving": 4,
+      "dietaryRestrictions": "Vegetarian, contains dairy"
+    }
+  ]
+}
