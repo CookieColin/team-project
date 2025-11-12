@@ -1,6 +1,6 @@
+package entity;
+
 import java.util.*;
-import java.io.FileReader;
-import java.io.IOException;
 
 
 public class Chef {
