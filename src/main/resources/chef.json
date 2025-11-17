@@ -21,7 +21,7 @@
       ],
       "prepTime": 10,
       "cookTime": 15,
-      "serving": 2,
+      "servings": 2,
       "dietaryRestrictions": "Contains dairy, eggs, pork, and gluten"
     },
     {
@@ -43,7 +43,7 @@
       ],
       "prepTime": 10,
       "cookTime": 0,
-      "serving": 4,
+      "servings": 4,
       "dietaryRestrictions": "Vegetarian, contains dairy"
     }
   ]
