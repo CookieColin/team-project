@@ -1,21 +1,45 @@
 package entities;
 
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class Chef {
     private String name;
-    private ArrayList<Recipe> recipes;
+    private List<Recipe> recipes = new ArrayList<>();
 
-    public Chef(String name) {
+    public Chef() {
+    }
+
+    public Chef(String name, List<Recipe> recipes) {
         this.name = name;
-
+        this.recipes = new ArrayList<>(Objects.requireNonNullElse(recipes, List.of()));
     }
 
-    public void loadRecipes(List<Recipe> recip) {
-        for (int i = 0; i < recip.size(); i++) {
-            recipes.add(recip.get(i));
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<Recipe> getRecipes() {
+        if (recipes == null) {
+            recipes = new ArrayList<>();
         }
+        return recipes;
     }
 
+    public void setRecipes(List<Recipe> recipes) {
+        this.recipes = new ArrayList<>(Objects.requireNonNullElse(recipes, List.of()));
+    }
+
+    public void addRecipe(Recipe recipe) {
+        getRecipes().add(recipe);
+    }
+
+    public boolean removeRecipeByName(String recipeName) {
+        return getRecipes().removeIf(recipe -> recipe.getName().equalsIgnoreCase(recipeName));
+    }
 }
