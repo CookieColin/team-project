@@ -13,14 +13,7 @@ import java.util.Scanner;
 
 public class SpoonacularAPI {
 
-    public static void main(String[] args) throws IOException {
-        HttpURLConnection conn = fetchAPIResponse();
-        Recipe recipe = parseApiResponse(conn);
-        System.out.println(recipe);
-
-    }
-
-    public static Recipe parseApiResponse(HttpURLConnection connection) throws IOException {
+    public static Recipe createRecipeFromJson(HttpURLConnection connection) throws IOException {
         Scanner scanner = new Scanner(connection.getInputStream());
         String response = scanner.useDelimiter("\\A").next();
         scanner.close();
@@ -36,8 +29,8 @@ public class SpoonacularAPI {
         ArrayList<String> ingredientsList = new ArrayList<>();
         ArrayList<String> stepsList = new ArrayList<>();
 
-        int prepTime = recipe.optInt("preparationMinutes", 0);
-        int cookTime = recipe.optInt("readyInMinutes", 0);
+        int prepTime = recipe.getInt("readyInMinutes") / 2;
+        int cookTime = recipe.getInt("readyInMinutes") / 2;
 
         for (int i = 0; i < ingredients.length(); i++) {
             JSONObject ingredient = ingredients.getJSONObject(i);
@@ -52,11 +45,6 @@ public class SpoonacularAPI {
             }
         }
 
-        Recipe recipeObj = createRecipeFromJson(title, ingredientsList, stepsList, prepTime, cookTime, recipe);
-        return recipeObj;
-    }
-
-    private static Recipe createRecipeFromJson(String title, ArrayList<String> ingredientsList, ArrayList<String> stepsList, int prepTime, int cookTime, JSONObject recipe) {
         return new RecipeBuilder()
                 .setName(title)
                 .setIngredients(ingredientsList)
