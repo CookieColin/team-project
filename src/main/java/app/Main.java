@@ -2,14 +2,11 @@ package app;
 
 import app.storage.ChefRepository;
 import entities.Chef;
-import entities.Recipe;
 import frameworks.swing.HomeView;
 
 import javax.swing.*;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class Main {
 
@@ -33,14 +30,15 @@ public class Main {
         homeView = new HomeView();
         refreshRecipeList();
 
-        recipeViewController = new RecipeViewController(frame, homeView, chef, chefRepository, this::refreshRecipeList);
+        recipeViewController = new RecipeViewController(frame, homeView, chef, chefRepository, null);
         recipeViewController.showHome();
 
         homeView.setAddRecipeAction(e -> recipeViewController.showAddRecipeForm());
+        homeView.setPopulateAction(e -> recipeViewController.populateSampleRecipes());
 
         homeView.setRecipeSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
-                String selection = homeView.getSelectedRecipe();
+                String selection = homeView.getSelectedRecipeName();
                 if (selection != null) {
                     recipeViewController.showRecipeDetail(selection);
                 }
@@ -66,15 +64,8 @@ public class Main {
 
     private void refreshRecipeList() {
         if (homeView != null && chef != null) {
-            homeView.setRecipes(extractRecipeNames());
+            homeView.setRecipes(chef.getRecipes());
         }
-    }
-
-    private List<String> extractRecipeNames() {
-        return chef.getRecipes()
-                .stream()
-                .map(Recipe::getName)
-                .collect(Collectors.toList());
     }
 
     private Path resolveStoragePath() {
