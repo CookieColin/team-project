@@ -1,5 +1,7 @@
 package frameworks.swing;
 
+import entities.Recipe;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionListener;
@@ -9,8 +11,8 @@ import java.util.List;
 
 public class HomeView extends JPanel {
 
-    private final DefaultListModel<String> recipeListModel = new DefaultListModel<>();
-    private final JList<String> recipeList = new JList<>(recipeListModel);
+    private final DefaultListModel<Recipe> recipeListModel = new DefaultListModel<>();
+    private final JList<Recipe> recipeList = new JList<>(recipeListModel);
     private final JButton addRecipeButton = new JButton("Add Recipe");
     private final JButton populateButton = new JButton("Populate");
     private final JButton filterButton = new JButton("Filter");
@@ -48,6 +50,7 @@ public class HomeView extends JPanel {
         recipeList.setVisibleRowCount(8);
         recipeList.setFont(recipeList.getFont().deriveFont(14f));
         recipeList.setBorder(new EmptyBorder(8, 8, 8, 8));
+        recipeList.setCellRenderer(new RecipeCellRenderer());
 
         JScrollPane scrollPane = new JScrollPane(recipeList);
         scrollPane.setBorder(BorderFactory.createTitledBorder("Recipe List"));
@@ -69,7 +72,7 @@ public class HomeView extends JPanel {
         return buttonRow;
     }
 
-    public void setRecipes(List<String> recipes) {
+    public void setRecipes(List<Recipe> recipes) {
         recipeListModel.clear();
         recipes.forEach(recipeListModel::addElement);
     }
@@ -90,11 +93,58 @@ public class HomeView extends JPanel {
         recipeList.addListSelectionListener(listener);
     }
 
-    public String getSelectedRecipe() {
-        return recipeList.getSelectedValue();
+    public String getSelectedRecipeName() {
+        Recipe recipe = recipeList.getSelectedValue();
+        return recipe == null ? null : recipe.getName();
     }
 
     public void clearSelection() {
         recipeList.clearSelection();
+    }
+
+    private static class RecipeCellRenderer extends JPanel implements ListCellRenderer<Recipe> {
+
+        private final JLabel nameLabel = new JLabel();
+        private final JLabel metaLabel = new JLabel();
+
+        RecipeCellRenderer() {
+            setLayout(new BorderLayout(4, 2));
+            setBorder(new EmptyBorder(6, 10, 6, 10));
+            setOpaque(true);
+
+            nameLabel.setFont(nameLabel.getFont().deriveFont(Font.BOLD, 14f));
+            metaLabel.setFont(metaLabel.getFont().deriveFont(Font.PLAIN, 12f));
+            metaLabel.setForeground(Color.DARK_GRAY);
+
+            add(nameLabel, BorderLayout.NORTH);
+            add(metaLabel, BorderLayout.CENTER);
+        }
+
+        @Override
+        public Component getListCellRendererComponent(JList<? extends Recipe> list,
+                                                      Recipe value,
+                                                      int index,
+                                                      boolean isSelected,
+                                                      boolean cellHasFocus) {
+            String dietary = value.getDietaryRestrictions();
+            String dietaryText = (dietary == null || dietary.isBlank()) ? "No restriction" : dietary;
+            String meta = String.format("Dietary: %s    Prep: %d min    Cook: %d min    Serves: %d",
+                    dietaryText,
+                    value.getPrepTime(),
+                    value.getCookTime(),
+                    value.getServings());
+
+            nameLabel.setText(value.getName());
+            metaLabel.setText(meta);
+
+            if (isSelected) {
+                setBackground(list.getSelectionBackground());
+                setForeground(list.getSelectionForeground());
+            } else {
+                setBackground(list.getBackground());
+                setForeground(list.getForeground());
+            }
+            return this;
+        }
     }
 }
