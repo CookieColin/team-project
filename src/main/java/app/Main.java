@@ -38,9 +38,6 @@ public class Main {
 
         homeView.setAddRecipeAction(e -> recipeViewController.showAddRecipeForm());
 
-        homeView.setPopulateAction(e -> recipeViewController.showAddRecipeForm());
-
-
         homeView.setRecipeSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 String selection = homeView.getSelectedRecipe();
