@@ -56,7 +56,7 @@ public class SpoonacularAPI {
                 .createRecipe();
     }
 
-    private static HttpURLConnection fetchAPIResponse() {
+    public static HttpURLConnection fetchAPIResponse() {
         try {
             URL url = new URL("https://api.spoonacular.com/recipes/random?apiKey=8000479eb88043f08c5f87a9f1b2fb0b");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
