@@ -106,7 +106,6 @@ public class RecipeViewController {
         Recipe random = SpoonacularAPI.createRecipeFromJson(SpoonacularAPI.fetchAPIResponse());
         this.chef.addRecipe(random);
         this.showHome();
-
     }
 
     private void showEditRecipeForm(Recipe existing) {
