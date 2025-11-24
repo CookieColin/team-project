@@ -32,6 +32,9 @@ public class Recipe {
         this.dietaryRestrictions = dietaryRestrictions;
     }
 
+    public <E> Recipe(String r1, String steps, List<E> a) {
+    }
+
     public String getName() {
         return name;
     }
