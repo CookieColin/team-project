@@ -35,7 +35,13 @@ public class Main {
         recipeViewController.showHome();
 
         homeView.setAddRecipeAction(e -> recipeViewController.showAddRecipeForm());
-        homeView.setPopulateAction(e -> recipeViewController.populateSampleRecipes());
+        homeView.setPopulateAction(e -> {
+            try {
+                recipeViewController.populate();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
 
         homeView.setRecipeSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {

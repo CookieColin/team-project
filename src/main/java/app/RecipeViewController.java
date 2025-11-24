@@ -3,6 +3,7 @@ package app;
 import app.storage.ChefRepository;
 import entities.Chef;
 import entities.Recipe;
+import frameworks.SpoonacularAPI;
 import frameworks.swing.HomeView;
 import frameworks.swing.RecipeDetailView;
 import frameworks.swing.RecipeFormView;
@@ -90,15 +91,21 @@ public class RecipeViewController {
         setContent(formView);
     }
 
-    public void populateSampleRecipes() {
-        List<Recipe> samples = sampleRecipes();
-        handleMutation(c -> samples.forEach(sample -> {
-            boolean exists = c.getRecipes().stream()
-                    .anyMatch(r -> r.getName().equalsIgnoreCase(sample.getName()));
-            if (!exists) {
-                c.addRecipe(sample);
-            }
-        }), this::showHome);
+//    public void populateSampleRecipes() {
+//        List<Recipe> samples = sampleRecipes();
+//        handleMutation(c -> samples.forEach(sample -> {
+//            boolean exists = c.getRecipes().stream()
+//                    .anyMatch(r -> r.getName().equalsIgnoreCase(sample.getName()));
+//            if (!exists) {
+//                c.addRecipe(sample);
+//            }
+//        }), this::showHome);
+//    }
+
+    public void populate() throws IOException {
+        Recipe random = SpoonacularAPI.createRecipeFromJson(SpoonacularAPI.fetchAPIResponse());
+        this.chef.addRecipe(random);
+        this.showHome();
     }
 
     private void showEditRecipeForm(Recipe existing) {
