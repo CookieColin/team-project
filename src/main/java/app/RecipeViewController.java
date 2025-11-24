@@ -105,6 +105,7 @@ public class RecipeViewController {
     public void populate() throws IOException {
         Recipe random = SpoonacularAPI.createRecipeFromJson(SpoonacularAPI.fetchAPIResponse());
         this.chef.addRecipe(random);
+        persistChanges();
         this.showHome();
     }
 
