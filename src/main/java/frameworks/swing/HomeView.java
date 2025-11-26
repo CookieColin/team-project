@@ -32,7 +32,7 @@ public class HomeView extends JPanel {
         title.setFont(title.getFont().deriveFont(Font.BOLD, 24f));
         title.setHorizontalAlignment(SwingConstants.LEFT);
 
-        JLabel subtitle = new JLabel("Select a recipe to view, or use the buttons below to manage your list.");
+        JLabel subtitle = new JLabel("Select one of your recipes to view, or use the buttons below to manage your list.");
         subtitle.setFont(subtitle.getFont().deriveFont(Font.PLAIN, 14f));
         subtitle.setForeground(Color.DARK_GRAY);
 
