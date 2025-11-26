@@ -103,6 +103,7 @@ class UserTest {
         assertFalse(removed);
         assertEquals(1, chef.getRecipes().size());
     }
+
     // gerRecipes and setRecipes for corresponding user Chef do not interfere
     @Test
     void testGetRecipesDefensiveInitialization() {
@@ -110,5 +111,116 @@ class UserTest {
         chef.setRecipes(null);
         assertNotNull(chef.getRecipes());
         assertTrue(chef.getRecipes().isEmpty());
+    }
+    @Test
+        // default constructor should create a Chef with an empty recipe list that can accept new recipes
+    void testDefaultConstructor_allowsAddingRecipes() {
+        Chef chef = new Chef();
+        Recipe recipe = new Recipe("Porridge",
+                List.of("Oats"), List.of("Boil"), 3, 5, 1, "");
+
+        assertTrue(chef.getRecipes().isEmpty());
+
+        chef.addRecipe(recipe);
+
+        assertEquals(1, chef.getRecipes().size());
+        assertEquals("Porridge", chef.getRecipes().get(0).getName());
+    }
+
+    @Test
+        // full constructor should correctly store multiple recipes
+    void testFullConstructor_storesMultipleRecipes() {
+        Recipe r1 = new Recipe("Salad", List.of("Lettuce"), List.of("Mix"), 2, 1, 1, "");
+        Recipe r2 = new Recipe("Sandwich", List.of("Bread"), List.of("Assemble"), 3, 0, 1, "");
+
+        List<Recipe> recipes = List.of(r1, r2);
+        Chef chef = new Chef("Nigella", recipes);
+
+        assertEquals("Nigella", chef.getName());
+        assertEquals(2, chef.getRecipes().size());
+        assertEquals("Salad", chef.getRecipes().get(0).getName());
+        assertEquals("Sandwich", chef.getRecipes().get(1).getName());
+    }
+
+    @Test
+        // updating recipes should replace the old list contents
+    void testSetRecipes_replacesPreviousRecipes() {
+        Chef chef = new Chef();
+
+        Recipe r1 = new Recipe("Tea", List.of("Water"), List.of("Boil"), 1, 5, 1, "");
+        chef.setRecipes(List.of(r1));
+        assertEquals(1, chef.getRecipes().size());
+
+        Recipe r2 = new Recipe("Coffee", List.of("Beans"), List.of("Brew"), 2, 4, 1, "");
+        Recipe r3 = new Recipe("Juice", List.of("Fruit"), List.of("Squeeze"), 3, 0, 1, "");
+        chef.setRecipes(List.of(r2, r3));
+
+        assertEquals(2, chef.getRecipes().size());
+        assertEquals("Coffee", chef.getRecipes().get(0).getName());
+        assertEquals("Juice", chef.getRecipes().get(1).getName());
+    }
+
+    @Test
+        // adding a recipe when some are already present should append to the list
+    void testAddRecipe_appendsAfterExistingOnes() {
+        Chef chef = new Chef();
+        Recipe r1 = new Recipe("Toast", List.of("Bread"), List.of("Toast it"), 1, 2, 1, "");
+        Recipe r2 = new Recipe("Jam Toast", List.of("Bread", "Jam"), List.of("Toast and spread"), 2, 3, 1, "");
+
+        chef.setRecipes(new ArrayList<>(List.of(r1)));
+        chef.addRecipe(r2);
+
+        assertEquals(2, chef.getRecipes().size());
+        assertEquals("Toast", chef.getRecipes().get(0).getName());
+        assertEquals("Jam Toast", chef.getRecipes().get(1).getName());
+    }
+
+    @Test
+        // removing a recipe should ignore case in the name comparison
+    void testRemoveRecipeByName_ignoresCaseInName() {
+        Recipe r1 = new Recipe("Curry", List.of("Spices"), List.of("Cook"), 15, 30, 4, "");
+        Recipe r2 = new Recipe("Rice", List.of("Rice"), List.of("Boil"), 5, 15, 4, "");
+
+        Chef chef = new Chef();
+        chef.setRecipes(new ArrayList<>(List.of(r1, r2)));
+
+        boolean removed = chef.removeRecipeByName("CURRY");
+
+        assertTrue(removed);
+        assertEquals(1, chef.getRecipes().size());
+        assertEquals("Rice", chef.getRecipes().get(0).getName());
+    }
+
+    @Test
+        // removing from an empty list should return false and keep list empty
+    void testRemoveRecipeByName_emptyListReturnsFalse() {
+        Chef chef = new Chef();
+
+        boolean removed = chef.removeRecipeByName("Anything");
+
+        assertFalse(removed);
+        assertNotNull(chef.getRecipes());
+        assertTrue(chef.getRecipes().isEmpty());
+    }
+
+    @Test
+        // setting recipes with an empty list should keep the internal list empty but non-null
+    void testSetEmptyRecipesResultsInEmptyNonNullList() {
+        Chef chef = new Chef();
+        chef.setRecipes(new ArrayList<>());
+
+        assertNotNull(chef.getRecipes());
+        assertTrue(chef.getRecipes().isEmpty());
+    }
+
+    @Test
+        // name can be changed multiple times and always reflect the last assignment
+    void testSetName_canBeUpdatedMultipleTimes() {
+        Chef chef = new Chef();
+
+        chef.setName("First Name");
+        chef.setName("Second Name");
+
+        assertEquals("Second Name", chef.getName());
     }
 }

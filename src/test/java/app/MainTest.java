@@ -83,4 +83,57 @@ class MainTest {
             throw new RuntimeException(e);
         }
     }
+    @Test
+        // verify the parent directory of the storage path is ~/.recipe-book
+    void testResolveStoragePath_parentDirectoryCorrect() {
+        Main main = new Main();
+        Path path = invokeResolveStoragePath(main);
+
+        String userHome = System.getProperty("user.home");
+        Path expectedParent = Path.of(userHome, ".recipe-book");
+        assertEquals(expectedParent, path.getParent());
+    }
+
+    @Test
+        // verify that loadChef returns a Chef with the expected stub name
+    void testLoadChef_returnsChefWithStubName() {
+        Main main = new Main();
+
+        ChefRepository stubRepo = new ChefRepositoryStub(false);
+        setPrivateField(main, "chefRepository", stubRepo);
+
+        Chef chef = invokeLoadChef(main);
+
+        assertNotNull(chef, "Chef should not be null");
+        assertEquals("Stub Chef", chef.getName(), "Chef name should come from the stub");
+    }
+
+    @Test
+        // verify that the stub throws an IOException when configured to fail
+    void testChefRepositoryStub_throwsOnFailureFlag() {
+        ChefRepositoryStub failingStub = new ChefRepositoryStub(true);
+
+        assertThrows(IOException.class, failingStub::loadChef,
+                "Expected stub to throw IOException when shouldThrow is true");
+    }
+
+    @Test
+        // verify that setPrivateField can overwrite an existing chefRepository instance
+    void testSetPrivateField_overwritesRepository() throws NoSuchFieldException, IllegalAccessException {
+        Main main = new Main();
+
+        ChefRepositoryStub firstStub = new ChefRepositoryStub(false);
+        ChefRepositoryStub secondStub = new ChefRepositoryStub(false);
+
+        // first injection
+        setPrivateField(main, "chefRepository", firstStub);
+        // overwrite with second
+        setPrivateField(main, "chefRepository", secondStub);
+
+        var field = Main.class.getDeclaredField("chefRepository");
+        field.setAccessible(true);
+        Object value = field.get(main);
+
+        assertSame(secondStub, value, "chefRepository field should reference the last injected stub");
+    }
 }

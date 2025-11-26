@@ -27,16 +27,16 @@ public class RecipeRoastedVeggies {
             ingredientListPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
             String[] ingredients = {
-                    "• one medium sweet potato, peeled and cubed",
-                    "• one chopped red bell pepper",
-                    "• one zucchini, sliced into half-moons",
-                    "• one small red onion cut into wedges",
-                    "• one cup broccoli florets",
-                    "• two tbsp olive oil",
-                    "• one tsp salt",
-                    "• one tsp paprika (optional: smoked)",
+                    "• 1 medium sweet potato, peeled and cubed",
+                    "• 1 chopped red bell pepper",
+                    "• 1 zucchini, sliced into half-moons",
+                    "• 1 small red onion cut into wedges",
+                    "• 1 cup broccoli florets",
+                    "• 2 tbsp olive oil",
+                    "• 1 tsp salt",
+                    "• 1 tsp paprika (optional: smoked)",
                     "• half a tsp of black pepper",
-                    "• one cup cooked quinoa or brown rice (base)"
+                    "• 1 cup cooked quinoa or brown rice (base)"
             };
 
             for (String item : ingredients) {

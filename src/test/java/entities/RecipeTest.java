@@ -112,4 +112,117 @@ class RecipeTest {
         Recipe recipe = new Recipe("Test", "Step", List.of());
         assertNotNull(recipe);
     }
+
+    @Test
+        // verify constructor correctly assigns name and servings only
+    void testConstructorSetsNameAndServings() {
+        Recipe recipe = new Recipe(
+                "Salad",
+                List.of("Lettuce", "Tomato"),
+                List.of("Chop", "Mix"),
+                2,
+                0,
+                2,
+                "vegan"
+        );
+
+        assertEquals("Salad", recipe.getName());
+        assertEquals(2, recipe.getServings());
+    }
+
+    @Test
+        // verify default numeric values are zero
+    void testDefaultNumericValuesAreZero() {
+        Recipe recipe = new Recipe();
+
+        assertEquals(0, recipe.getPrepTime());
+        assertEquals(0, recipe.getCookTime());
+        assertEquals(0, recipe.getServings());
+    }
+
+    @Test
+        // verify setting only name does not affect other fields
+    void testSetOnlyNameDoesNotAffectOtherFields() {
+        Recipe recipe = new Recipe();
+        recipe.setName("Toast");
+
+        assertEquals("Toast", recipe.getName());
+        assertNotNull(recipe.getIngredients());
+        assertNotNull(recipe.getSteps());
+    }
+
+    @Test
+        // verify ingredients list can be updated after initial set
+    void testIngredientsCanBeUpdated() {
+        Recipe recipe = new Recipe();
+
+        recipe.setIngredients(List.of("Flour"));
+        recipe.setIngredients(List.of("Flour", "Water"));
+
+        assertEquals(List.of("Flour", "Water"), recipe.getIngredients());
+    }
+
+    @Test
+        // verify steps list can be updated after initial set
+    void testStepsCanBeUpdated() {
+        Recipe recipe = new Recipe();
+
+        recipe.setSteps(List.of("Step A"));
+        recipe.setSteps(List.of("Step A", "Step B"));
+
+        assertEquals(List.of("Step A", "Step B"), recipe.getSteps());
+    }
+
+    @Test
+        // verify dietary restriction can be changed
+    void testDietaryRestrictionCanBeUpdated() {
+        Recipe recipe = new Recipe();
+
+        recipe.setDietaryRestrictions("vegan");
+        recipe.setDietaryRestrictions("gluten-free");
+
+        assertEquals("gluten-free", recipe.getDietaryRestrictions());
+    }
+
+    @Test
+        // verify empty ingredient list stays empty
+    void testEmptyIngredientsRemainEmpty() {
+        Recipe recipe = new Recipe();
+        recipe.setIngredients(List.of());
+
+        assertNotNull(recipe.getIngredients());
+        assertTrue(recipe.getIngredients().isEmpty());
+    }
+
+    @Test
+        // verify empty steps list stays empty
+    void testEmptyStepsRemainEmpty() {
+        Recipe recipe = new Recipe();
+        recipe.setSteps(List.of());
+
+        assertNotNull(recipe.getSteps());
+        assertTrue(recipe.getSteps().isEmpty());
+    }
+
+    @Test
+        // verify prep time can be changed after being set
+    void testPrepTimeCanBeUpdated() {
+        Recipe recipe = new Recipe();
+
+        recipe.setPrepTime(5);
+        recipe.setPrepTime(10);
+
+        assertEquals(10, recipe.getPrepTime());
+    }
+
+    @Test
+        // verify cook time can be changed after being set
+    void testCookTimeCanBeUpdated() {
+        Recipe recipe = new Recipe();
+
+        recipe.setCookTime(7);
+        recipe.setCookTime(12);
+
+        assertEquals(12, recipe.getCookTime());
+    }
 }
