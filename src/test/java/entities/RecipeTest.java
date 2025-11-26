@@ -112,4 +112,11 @@ class RecipeTest {
         Recipe recipe = new Recipe("Test", "Step", List.of());
         assertNotNull(recipe);
     }
+
+    @Test
+    void testAlternativeConstructorDoesAlternative() {
+        Recipe recipe = new Recipe("Test", "Step", List.of());
+        assertEquals(null, recipe.getName());
+        assertNotNull(recipe);
+    }
 }
