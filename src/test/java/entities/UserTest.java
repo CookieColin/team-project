@@ -111,4 +111,35 @@ class UserTest {
         assertNotNull(chef.getRecipes());
         assertTrue(chef.getRecipes().isEmpty());
     }
+
+    @Test
+    void testAddMultipleRecipes() {
+        Chef chef = new Chef();
+        chef.addRecipe(new Recipe("R1", List.of(), List.of(), 1, 1, 1, ""));
+        chef.addRecipe(new Recipe("R2", List.of(), List.of(), 2, 2, 2, ""));
+        chef.addRecipe(new Recipe("R3", List.of(), List.of(), 3, 3, 3, ""));
+        assertEquals(3, chef.getRecipes().size());
+    }
+
+    @Test
+    void testChefNameCanBeEmpty() {
+        Chef chef = new Chef("", new ArrayList<>());
+        assertEquals("", chef.getName());
+    }
+
+    @Test
+    void testRemoveRecipeByNameCaseInsensitive() {
+        Chef chef = new Chef();
+        chef.addRecipe(new Recipe("UPPERCASE", List.of(), List.of(), 1, 1, 1, ""));
+        boolean removed = chef.removeRecipeByName("uppercase");
+        assertTrue(removed);
+        assertTrue(chef.getRecipes().isEmpty());
+    }
+
+    @Test
+    void testChefWithEmptyRecipeList() {
+        Chef chef = new Chef("Empty Chef", new ArrayList<>());
+        assertEquals("Empty Chef", chef.getName());
+        assertTrue(chef.getRecipes().isEmpty());
+    }
 }

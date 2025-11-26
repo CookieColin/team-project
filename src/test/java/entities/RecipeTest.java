@@ -120,4 +120,35 @@ class RecipeTest {
         assertEquals(null, recipe.getName());
         assertNotNull(recipe);
     }
+
+    @Test
+    void testTotalTime() {
+        Recipe recipe = new Recipe("Test", List.of(), List.of(), 5, 10, 2, "");
+        assertEquals(15, recipe.getPrepTime() + recipe.getCookTime());
+    }
+
+    @Test
+    void testEmptyIngredientsList() {
+        Recipe recipe = new Recipe("Empty", List.of(), List.of("Step1"), 1, 1, 1, "");
+        assertTrue(recipe.getIngredients().isEmpty());
+    }
+
+    @Test
+    void testEmptyStepsList() {
+        Recipe recipe = new Recipe("Empty", List.of("Ingredient"), List.of(), 1, 1, 1, "");
+        assertTrue(recipe.getSteps().isEmpty());
+    }
+
+    @Test
+    void testZeroServings() {
+        Recipe recipe = new Recipe();
+        assertEquals(0, recipe.getServings());
+    }
+
+    @Test
+    void testSetServingsPositive() {
+        Recipe recipe = new Recipe();
+        recipe.setServings(6);
+        assertEquals(6, recipe.getServings());
+    }
 }
