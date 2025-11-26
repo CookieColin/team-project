@@ -3,7 +3,7 @@ package app;
 import app.storage.ChefRepository;
 import entities.Chef;
 import org.junit.jupiter.api.Test;
-
+import entities.Recipe;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -83,4 +83,147 @@ class MainTest {
             throw new RuntimeException(e);
         }
     }
+
+    @Test
+// validate that resolveStoragePath points to a JSON file
+    void testResolveStoragePath_hasJsonExtension() {
+        Main main = new Main();
+        Path path = invokeResolveStoragePath(main);
+        assertTrue(path.toString().endsWith("chef.json"));
+    }
+
+    @Test
+// ensure that resolveStoragePath uses hidden directory
+    void testResolveStoragePath_hiddenDirectory() {
+        Main main = new Main();
+        Path path = invokeResolveStoragePath(main);
+        assertTrue(path.toString().contains(".recipe-book"));
+    }
+
+    @Test
+// test loadChef returns non-null even if repository returns empty Chef
+    void testLoadChef_repositoryReturnsEmptyChef() {
+        Main main = new Main();
+        ChefRepository fakeRepo = new ChefRepositoryStub(false) {
+            @Override
+            public Chef loadChef() {
+                return new Chef(); // empty
+            }
+        };
+        setPrivateField(main, "chefRepository", fakeRepo);
+        Chef chef = invokeLoadChef(main);
+        assertNotNull(chef);
+    }
+
+    @Test
+// loadChef returns chef with expected empty recipe list
+    void testLoadChef_emptyChefHasEmptyRecipes() {
+        Main main = new Main();
+        ChefRepository fakeRepo = new ChefRepositoryStub(false) {
+            @Override
+            public Chef loadChef() { return new Chef("A", new ArrayList<>()); }
+        };
+        setPrivateField(main, "chefRepository", fakeRepo);
+        Chef chef = invokeLoadChef(main);
+        assertTrue(chef.getRecipes().isEmpty());
+    }
+
+
+
+    @Test
+// ensure storage path always resolves under home directory
+    void testResolveStoragePath_startsWithHomeDirectory() {
+        Main main = new Main();
+        Path path = invokeResolveStoragePath(main);
+        assertTrue(path.startsWith(System.getProperty("user.home")));
+    }
+
+    @Test
+// test that reflection method for loadChef is private
+    void testLoadChefMethodIsPrivate() throws Exception {
+        var method = Main.class.getDeclaredMethod("loadChef");
+        assertFalse(method.canAccess(new Main())); // not public
+    }
+
+    @Test
+// test that resolveStoragePath method is private
+    void testResolveStoragePathMethodIsPrivate() throws Exception {
+        var method = Main.class.getDeclaredMethod("resolveStoragePath");
+        assertFalse(method.canAccess(new Main()));
+    }
+
+    @Test
+// test that setPrivateField actually overwrites the chefRepository field
+    void testSetPrivateField_overwritesRepository() {
+        Main main = new Main();
+        ChefRepository fakeRepo = new ChefRepositoryStub(false);
+        setPrivateField(main, "chefRepository", fakeRepo);
+        Chef loaded = invokeLoadChef(main);
+        assertEquals("Stub Chef", loaded.getName());
+    }
+
+
+
+    @Test
+// test that stub repository receiving correct constructor path doesn't break tests
+    void testChefRepositoryStubIgnoresPath() {
+        ChefRepositoryStub stub = new ChefRepositoryStub(false);
+        assertDoesNotThrow(stub::loadChef);
+    }
+
+    @Test
+// test that path uses correct parent directory
+    void testResolveStoragePath_parentDirectoryCorrect() {
+        Main main = new Main();
+        Path path = invokeResolveStoragePath(main);
+        assertEquals(".recipe-book", path.getParent().getFileName().toString());
+    }
+
+    @Test
+// ensure that loadChef returns Chef object with name preserved
+    void testLoadChef_preservesNameFromRepository() {
+        Main main = new Main();
+
+        ChefRepository fakeRepo = new ChefRepositoryStub(false) {
+            @Override
+            public Chef loadChef() { return new Chef("Custom Name", new ArrayList<>()); }
+        };
+        setPrivateField(main, "chefRepository", fakeRepo);
+
+        Chef chef = invokeLoadChef(main);
+        assertEquals("Custom Name", chef.getName());
+    }
+
+    @Test
+// test loadChef when recipes list is prepopulated
+    void testLoadChef_withPrePopulatedRecipes() {
+        Main main = new Main();
+        ChefRepository fakeRepo = new ChefRepositoryStub(false) {
+            @Override
+            public Chef loadChef() {
+                Chef c = new Chef();
+                c.addRecipe(new Recipe());
+                return c;
+            }
+        };
+        setPrivateField(main, "chefRepository", fakeRepo);
+        Chef chef = invokeLoadChef(main);
+        assertEquals(1, chef.getRecipes().size());
+    }
+
+    @Test
+// ensure loadChef handles repository with unusual values
+    void testLoadChef_handlesWeirdChefValues() {
+        Main main = new Main();
+        ChefRepository fakeRepo = new ChefRepositoryStub(false) {
+            @Override
+            public Chef loadChef() {
+                return new Chef("", null); // strange but allowed
+            }
+        };
+        setPrivateField(main, "chefRepository", fakeRepo);
+        Chef chef = invokeLoadChef(main);
+        assertNotNull(chef.getRecipes()); // null must be sanitized
+    }
+
 }

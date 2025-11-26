@@ -111,4 +111,282 @@ class UserTest {
         assertNotNull(chef.getRecipes());
         assertTrue(chef.getRecipes().isEmpty());
     }
+
+    @Test
+// Setting recipes should store a defensive copy and not the original list reference
+    void testSetRecipesStoresDefensiveCopy() {
+        Recipe r = new Recipe("A", List.of(), List.of(), 1, 1, 1, "");
+        List<Recipe> original = new ArrayList<>(List.of(r));
+
+        Chef chef = new Chef();
+        chef.setRecipes(original);
+
+        original.clear();  // mutate original
+
+        assertEquals(1, chef.getRecipes().size());
+    }
+
+
+
+    @Test
+// removeRecipeByName should be case-insensitive (already implied but test deeper)
+    void testRemoveRecipeCaseInsensitivity() {
+        Recipe r = new Recipe("Cake", List.of(), List.of(), 1, 1, 1, "");
+        Chef chef = new Chef();
+        chef.addRecipe(r);
+
+        assertTrue(chef.removeRecipeByName("cAkE"));
+        assertTrue(chef.getRecipes().isEmpty());
+    }
+
+    @Test
+// Removing recipe from empty list should return false
+    void testRemoveFromEmptyList() {
+        Chef chef = new Chef();
+        assertFalse(chef.removeRecipeByName("Anything"));
+    }
+
+    @Test
+// Removing one of many recipes should preserve the others
+    void testRemoveOneOfMany() {
+        Recipe a = new Recipe("A", List.of(), List.of(), 1, 1, 1, "");
+        Recipe b = new Recipe("B", List.of(), List.of(), 1, 1, 1, "");
+        Recipe c = new Recipe("C", List.of(), List.of(), 1, 1, 1, "");
+
+        Chef chef = new Chef();
+        chef.setRecipes(new ArrayList<>(List.of(a, b, c)));
+
+        chef.removeRecipeByName("b");
+
+        assertEquals(List.of(a, c), chef.getRecipes());
+    }
+
+    @Test
+// Multiple consecutive removes should work correctly
+    void testMultipleRemovals() {
+        Recipe a = new Recipe("A", List.of(), List.of(), 1, 1, 1, "");
+        Recipe b = new Recipe("B", List.of(), List.of(), 1, 1, 1, "");
+
+        Chef chef = new Chef();
+        chef.setRecipes(new ArrayList<>(List.of(a, b)));
+
+        chef.removeRecipeByName("A");
+        chef.removeRecipeByName("B");
+
+        assertTrue(chef.getRecipes().isEmpty());
+    }
+
+    @Test
+// Chef name should support an empty string
+    void testSetEmptyName() {
+        Chef chef = new Chef();
+        chef.setName("");
+        assertEquals("", chef.getName());
+    }
+
+    @Test
+// Chef name should support whitespace
+    void testWhitespaceName() {
+        Chef chef = new Chef();
+        chef.setName("   ");
+        assertEquals("   ", chef.getName());
+    }
+
+    @Test
+// Setting recipes multiple times should overwrite previous recipes
+    void testOverwriteRecipes() {
+        Recipe a = new Recipe("1", List.of(), List.of(), 1, 1, 1, "");
+        Recipe b = new Recipe("2", List.of(), List.of(), 1, 1, 1, "");
+
+        Chef chef = new Chef();
+        chef.setRecipes(List.of(a));
+        chef.setRecipes(List.of(b));
+
+        assertEquals("2", chef.getRecipes().get(0).getName());
+    }
+
+    @Test
+// Add multiple recipes sequentially
+    void testAddRecipeMultipleTimes() {
+        Chef chef = new Chef();
+
+        chef.addRecipe(new Recipe("A", List.of(), List.of(), 1, 1, 1, ""));
+        chef.addRecipe(new Recipe("B", List.of(), List.of(), 1, 1, 1, ""));
+
+        assertEquals(2, chef.getRecipes().size());
+    }
+
+    @Test
+// Chef should maintain the order recipes were added
+    void testOrderPreserved() {
+        Chef chef = new Chef();
+
+        chef.addRecipe(new Recipe("A", List.of(), List.of(), 1, 1, 1, ""));
+        chef.addRecipe(new Recipe("B", List.of(), List.of(), 1, 1, 1, ""));
+        chef.addRecipe(new Recipe("C", List.of(), List.of(), 1, 1, 1, ""));
+
+        assertEquals("A", chef.getRecipes().get(0).getName());
+        assertEquals("C", chef.getRecipes().get(2).getName());
+    }
+
+    @Test
+// Setting recipes to an empty list results in empty list
+    void testSetEmptyRecipesList() {
+        Chef chef = new Chef();
+        chef.setRecipes(List.of());
+        assertTrue(chef.getRecipes().isEmpty());
+    }
+
+    @Test
+// Recipes list supports duplicates
+    void testAllowDuplicateRecipes() {
+        Recipe r = new Recipe("A", List.of(), List.of(), 1, 1, 1, "");
+
+        Chef chef = new Chef();
+        chef.setRecipes(List.of(r, r));
+
+        assertEquals(2, chef.getRecipes().size());
+    }
+
+
+
+    @Test
+// Recipes list remains independent from external list after multiple mutations
+    void testListIndependenceAfterMutations() {
+        List<Recipe> external = new ArrayList<>();
+        external.add(new Recipe("A", List.of(), List.of(), 1, 1, 1, ""));
+
+        Chef chef = new Chef();
+        chef.setRecipes(external);
+
+        external.clear();
+
+        assertEquals(1, chef.getRecipes().size());
+    }
+
+    @Test
+// Chef with long name is allowed
+    void testLongChefName() {
+        String longName = "A".repeat(200);
+        Chef chef = new Chef(longName, List.of());
+        assertEquals(longName, chef.getName());
+    }
+
+    @Test
+// Removing recipe should not modify objects outside
+    void testRemoveDoesNotModifyOtherRecipeObjects() {
+        Recipe a = new Recipe("A", List.of(), List.of(), 1, 1, 1, "");
+        Recipe b = new Recipe("B", List.of(), List.of(), 1, 1, 1, "");
+
+        Chef chef = new Chef("Test", new ArrayList<>(List.of(a, b)));
+        chef.removeRecipeByName("A");
+
+        assertEquals("A", a.getName());
+    }
+
+    @Test
+// Setting recipes should deep copy list but not clone objects
+    void testSetRecipesDoesNotCloneRecipeObjects() {
+        Recipe a = new Recipe("A", List.of(), List.of(), 1, 1, 1, "");
+        List<Recipe> list = new ArrayList<>(List.of(a));
+
+        Chef chef = new Chef();
+        chef.setRecipes(list);
+
+        assertSame(a, chef.getRecipes().get(0));  // same object reference expected
+    }
+
+    @Test
+// AddRecipe should not allow mutation of internal list from outside
+    void testAddRecipeListIndependence() {
+        List<Recipe> external = new ArrayList<>();
+        Chef chef = new Chef("Name", external);
+
+        chef.addRecipe(new Recipe("X", List.of(), List.of(), 1, 1, 1, ""));
+        assertEquals(1, chef.getRecipes().size());
+    }
+
+    @Test
+// Removing a recipe that differs by trailing spaces should fail
+    void testRemoveRecipeWithTrailingSpacesFails() {
+        Recipe r = new Recipe("Soup", List.of(), List.of(), 1, 1, 1, "");
+        Chef chef = new Chef();
+        chef.addRecipe(r);
+
+        assertFalse(chef.removeRecipeByName("Soup   "));
+    }
+
+    @Test
+// Name retrieval after multiple sets
+    void testMultipleNameUpdates() {
+        Chef chef = new Chef();
+        chef.setName("A");
+        chef.setName("B");
+        chef.setName("C");
+
+        assertEquals("C", chef.getName());
+    }
+
+    @Test
+// Adding many recipes should work
+    void testAddManyRecipes() {
+        Chef chef = new Chef();
+
+        for (int i = 0; i < 100; i++) {
+            chef.addRecipe(new Recipe("R" + i, List.of(), List.of(), 1, 1, 1, ""));
+        }
+
+        assertEquals(100, chef.getRecipes().size());
+    }
+
+    @Test
+// Remove last recipe among many
+    void testRemoveLastOfMany() {
+        Chef chef = new Chef();
+        for (int i = 0; i < 10; i++) {
+            chef.addRecipe(new Recipe("R" + i, List.of(), List.of(), 1, 1, 1, ""));
+        }
+
+        chef.removeRecipeByName("R9");
+
+        assertEquals(9, chef.getRecipes().size());
+    }
+
+    @Test
+// Removing the first recipe among many
+    void testRemoveFirstOfMany() {
+        Chef chef = new Chef();
+        for (int i = 0; i < 5; i++) {
+            chef.addRecipe(new Recipe("R" + i, List.of(), List.of(), 1, 1, 1, ""));
+        }
+
+        chef.removeRecipeByName("R0");
+
+        assertEquals("R1", chef.getRecipes().get(0).getName());
+    }
+
+    @Test
+// Removing a recipe name with different spacing should not match
+    void testRemoveRecipeWithExtraSpacesShouldNotMatch() {
+        Recipe r = new Recipe("Cake", List.of(), List.of(), 1, 1, 1, "");
+        Chef chef = new Chef();
+        chef.addRecipe(r);
+
+        assertFalse(chef.removeRecipeByName("  Cake"));
+    }
+
+    @Test
+// getRecipes should never return null under any circumstances
+    void testGetRecipesNeverNull() {
+        Chef chef = new Chef("X", null);
+        assertNotNull(chef.getRecipes());
+    }
+
+    @Test
+// full constructor with null name should allow name to remain null
+    void testFullConstructorNullNameAllowed() {
+        Chef chef = new Chef(null, List.of());
+        assertNull(chef.getName());
+    }
+
 }
