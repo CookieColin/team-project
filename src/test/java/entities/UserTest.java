@@ -389,4 +389,116 @@ class UserTest {
         assertNull(chef.getName());
     }
 
+    @Test
+        // constructor should preserve the order of recipes passed in
+    void testConstructorPreservesRecipeOrder() {
+        Recipe a = new Recipe("A", List.of(), List.of(), 1, 1, 1, "");
+        Recipe b = new Recipe("B", List.of(), List.of(), 1, 1, 1, "");
+        Recipe c = new Recipe("C", List.of(), List.of(), 1, 1, 1, "");
+
+        List<Recipe> original = List.of(a, b, c);
+        Chef chef = new Chef("OrderChef", original);
+
+        assertEquals("A", chef.getRecipes().get(0).getName());
+        assertEquals("B", chef.getRecipes().get(1).getName());
+        assertEquals("C", chef.getRecipes().get(2).getName());
+    }
+
+    @Test
+        // constructor with empty list should result in empty but non-null recipes list
+    void testConstructorWithEmptyRecipeList() {
+        Chef chef = new Chef("EmptyChef", new ArrayList<>());
+
+        assertNotNull(chef.getRecipes());
+        assertTrue(chef.getRecipes().isEmpty());
+    }
+
+    @Test
+        // removing by partial name should not match (only exact case-insensitive matches allowed)
+    void testRemoveRecipeByNamePartialNameDoesNotMatch() {
+        Recipe r = new Recipe("Chocolate Cake", List.of(), List.of(), 1, 1, 1, "");
+        Chef chef = new Chef();
+        chef.addRecipe(r);
+
+        boolean removed = chef.removeRecipeByName("Cake");
+
+        assertFalse(removed);
+        assertEquals(1, chef.getRecipes().size());
+    }
+
+    @Test
+        // failed removal should not change the number of recipes
+    void testFailedRemovalDoesNotChangeRecipeCount() {
+        Recipe r1 = new Recipe("Dish1", List.of(), List.of(), 1, 1, 1, "");
+        Recipe r2 = new Recipe("Dish2", List.of(), List.of(), 1, 1, 1, "");
+
+        Chef chef = new Chef();
+        chef.setRecipes(new ArrayList<>(List.of(r1, r2)));
+
+        int before = chef.getRecipes().size();
+        boolean removed = chef.removeRecipeByName("Unknown");
+
+        assertFalse(removed);
+        assertEquals(before, chef.getRecipes().size());
+    }
+
+    @Test
+        // setting a large number of recipes at once should be supported
+    void testSetRecipesWithLargeCollection() {
+        List<Recipe> manyRecipes = new ArrayList<>();
+        for (int i = 0; i < 50; i++) {
+            manyRecipes.add(new Recipe("R" + i, List.of(), List.of(), 1, 1, 1, ""));
+        }
+
+        Chef chef = new Chef();
+        chef.setRecipes(manyRecipes);
+
+        assertEquals(50, chef.getRecipes().size());
+        assertEquals("R0", chef.getRecipes().get(0).getName());
+        assertEquals("R49", chef.getRecipes().get(49).getName());
+    }
+
+    @Test
+        // setting recipes after adding should replace the previously added recipes
+    void testSetRecipesAfterAddReplacesExisting() {
+        Chef chef = new Chef();
+        chef.addRecipe(new Recipe("Old", List.of(), List.of(), 1, 1, 1, ""));
+
+        Recipe newRecipe = new Recipe("New", List.of(), List.of(), 1, 1, 1, "");
+        chef.setRecipes(List.of(newRecipe));
+
+        assertEquals(1, chef.getRecipes().size());
+        assertEquals("New", chef.getRecipes().get(0).getName());
+    }
+
+    @Test
+        // external list mutations after setRecipes should not affect internal list contents
+    void testExternalListMutationAfterSetDoesNotAffectChef() {
+        Recipe a = new Recipe("A", List.of(), List.of(), 1, 1, 1, "");
+        Recipe b = new Recipe("B", List.of(), List.of(), 1, 1, 1, "");
+
+        List<Recipe> external = new ArrayList<>(List.of(a, b));
+        Chef chef = new Chef();
+        chef.setRecipes(external);
+
+        external.remove(0);  // mutate external list
+
+        assertEquals(2, chef.getRecipes().size());
+        assertEquals("A", chef.getRecipes().get(0).getName());
+        assertEquals("B", chef.getRecipes().get(1).getName());
+    }
+
+    @Test
+        // constructor with name and null recipes should still allow setting recipes later
+    void testConstructorWithNullRecipesThenSetRecipes() {
+        Chef chef = new Chef("NullRecipesChef", null);
+
+        assertNotNull(chef.getRecipes());  // from your existing expectations
+        chef.setRecipes(List.of(new Recipe("Later", List.of(), List.of(), 1, 1, 1, "")));
+
+        assertEquals(1, chef.getRecipes().size());
+        assertEquals("Later", chef.getRecipes().get(0).getName());
+    }
+
+
 }

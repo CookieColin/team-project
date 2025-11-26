@@ -226,4 +226,116 @@ class MainTest {
         assertNotNull(chef.getRecipes()); // null must be sanitized
     }
 
+    @Test
+        // verify that resolveStoragePath returns an absolute path
+    void testResolveStoragePath_isAbsolutePath() {
+        Main main = new Main();
+        Path path = invokeResolveStoragePath(main);
+
+        assertTrue(path.isAbsolute(), "Storage path should be absolute");
+    }
+
+    @Test
+        // verify that the storage file name is exactly chef.json
+    void testResolveStoragePath_fileNameIsChefJson() {
+        Main main = new Main();
+        Path path = invokeResolveStoragePath(main);
+
+        assertEquals("chef.json", path.getFileName().toString());
+    }
+
+    @Test
+        // calling resolveStoragePath multiple times should return the same path
+    void testResolveStoragePath_isDeterministic() {
+        Main main = new Main();
+        Path first = invokeResolveStoragePath(main);
+        Path second = invokeResolveStoragePath(main);
+
+        assertEquals(first, second, "resolveStoragePath should be deterministic");
+    }
+
+    @Test
+        // verify that loadChef always returns a Chef instance
+    void testLoadChef_returnsChefInstance() {
+        Main main = new Main();
+        ChefRepository fakeRepo = new ChefRepositoryStub(false);
+        setPrivateField(main, "chefRepository", fakeRepo);
+
+        Chef chef = invokeLoadChef(main);
+
+        assertNotNull(chef);
+        assertInstanceOf(Chef.class, chef);
+    }
+
+    @Test
+        // verify that stub repository always returns a Chef with name 'Stub Chef'
+    void testChefRepositoryStub_returnsStubChefName() throws IOException {
+        ChefRepositoryStub stub = new ChefRepositoryStub(false);
+
+        Chef chef = stub.loadChef();
+
+        assertNotNull(chef);
+        assertEquals("Stub Chef", chef.getName());
+    }
+
+    @Test
+        // verify that stub repository returns a Chef with a non-null recipes list
+    void testChefRepositoryStub_recipesListNotNull() throws IOException {
+        ChefRepositoryStub stub = new ChefRepositoryStub(false);
+
+        Chef chef = stub.loadChef();
+
+        assertNotNull(chef.getRecipes(), "Recipes list from stub should not be null");
+        assertTrue(chef.getRecipes().isEmpty(), "Default stub recipes list should be empty");
+    }
+
+    @Test
+        // ensure setPrivateField can inject a custom anonymous ChefRepository
+    void testSetPrivateField_injectsAnonymousRepository() {
+        Main main = new Main();
+
+        ChefRepository customRepo = new ChefRepositoryStub(false) {
+            @Override
+            public Chef loadChef() {
+                return new Chef("Anonymous Chef", new ArrayList<>());
+            }
+        };
+
+        setPrivateField(main, "chefRepository", customRepo);
+
+        Chef chef = invokeLoadChef(main);
+        assertEquals("Anonymous Chef", chef.getName());
+    }
+
+    @Test
+        // verify that loadChef correctly reflects a repository that pre-populates multiple recipes
+    void testLoadChef_chefWithMultipleRecipes() {
+        Main main = new Main();
+
+        ChefRepository fakeRepo = new ChefRepositoryStub(false) {
+            @Override
+            public Chef loadChef() {
+                Chef c = new Chef("Multi Chef", new ArrayList<>());
+                c.addRecipe(new Recipe());
+                c.addRecipe(new Recipe());
+                return c;
+            }
+        };
+
+        setPrivateField(main, "chefRepository", fakeRepo);
+        Chef chef = invokeLoadChef(main);
+
+        assertEquals("Multi Chef", chef.getName());
+        assertEquals(2, chef.getRecipes().size());
+    }
+
+    @Test
+        // verify that the parent directory of the storage path is not null
+    void testResolveStoragePath_parentDirectoryNotNull() {
+        Main main = new Main();
+        Path path = invokeResolveStoragePath(main);
+
+        assertNotNull(path.getParent(), "Storage path should have a parent directory");
+    }
+
 }
