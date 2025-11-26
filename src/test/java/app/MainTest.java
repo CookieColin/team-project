@@ -83,4 +83,36 @@ class MainTest {
             throw new RuntimeException(e);
         }
     }
+
+    @Test
+    void testMainInstantiation() {
+        Main main = new Main();
+        assertNotNull(main);
+    }
+
+    @Test
+    void testResolveStoragePath_containsChefJson() {
+        Main main = new Main();
+        Path path = invokeResolveStoragePath(main);
+        assertTrue(path.toString().endsWith("chef.json"));
+    }
+
+    @Test
+    void testResolveStoragePath_containsRecipeBookFolder() {
+        Main main = new Main();
+        Path path = invokeResolveStoragePath(main);
+        assertTrue(path.toString().contains(".recipe-book"));
+    }
+
+    @Test
+    void testChefRepositoryStub_returnsChefWithEmptyRecipes() {
+        ChefRepository stub = new ChefRepositoryStub(false);
+        try {
+            Chef chef = stub.loadChef();
+            assertNotNull(chef.getRecipes());
+            assertTrue(chef.getRecipes().isEmpty());
+        } catch (IOException e) {
+            fail("Should not throw exception");
+        }
+    }
 }
