@@ -3,7 +3,7 @@ package frameworks;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import entities.Recipe;
-import entities.RecipeBuilder;
+import entities.recipeBuilder;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -13,8 +13,8 @@ import java.util.Scanner;
 
 public class SpoonacularAPI {
 
-    public static Recipe createRecipeFromJson(HttpURLConnection connection) throws IOException {
-        Scanner scanner = new Scanner(connection.getInputStream());
+    public static Recipe createRecipeFromJson() throws IOException {
+        Scanner scanner = new Scanner(fetchAPIResponse().getInputStream());
         String response = scanner.useDelimiter("\\A").next();
         scanner.close();
 
@@ -45,7 +45,7 @@ public class SpoonacularAPI {
             }
         }
 
-        return new RecipeBuilder()
+        return new recipeBuilder()
                 .setName(title)
                 .setIngredients(ingredientsList)
                 .setSteps(stepsList)
@@ -56,7 +56,7 @@ public class SpoonacularAPI {
                 .createRecipe();
     }
 
-    public static HttpURLConnection fetchAPIResponse() {
+    private static HttpURLConnection fetchAPIResponse() {
         try {
             URL url = new URL("https://api.spoonacular.com/recipes/random?apiKey=8000479eb88043f08c5f87a9f1b2fb0b");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();

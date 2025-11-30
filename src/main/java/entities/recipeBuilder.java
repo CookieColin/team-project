@@ -2,7 +2,7 @@ package entities;
 
 import java.util.ArrayList;
 
-public class RecipeBuilder {
+public class recipeBuilder {
     private String name;
     private ArrayList<String> ingredients;
     private ArrayList<String> steps;
@@ -11,37 +11,37 @@ public class RecipeBuilder {
     private int servings;
     private String dietaryRestrictions;
 
-    public RecipeBuilder setName(String name) {
+    public recipeBuilder setName(String name) {
         this.name = name;
         return this;
     }
 
-    public RecipeBuilder setIngredients(ArrayList<String> ingredients) {
+    public recipeBuilder setIngredients(ArrayList<String> ingredients) {
         this.ingredients = ingredients;
         return this;
     }
 
-    public RecipeBuilder setSteps(ArrayList<String> steps) {
+    public recipeBuilder setSteps(ArrayList<String> steps) {
         this.steps = steps;
         return this;
     }
 
-    public RecipeBuilder setPrepTime(int prepTime) {
+    public recipeBuilder setPrepTime(int prepTime) {
         this.prepTime = prepTime;
         return this;
     }
 
-    public RecipeBuilder setCookTime(int cookTime) {
+    public recipeBuilder setCookTime(int cookTime) {
         this.cookTime = cookTime;
         return this;
     }
 
-    public RecipeBuilder setServings(int servings) {
+    public recipeBuilder setServings(int servings) {
         this.servings = servings;
         return this;
     }
 
-    public RecipeBuilder setDietaryRestrictions(String dietaryRestrictions) {
+    public recipeBuilder setDietaryRestrictions(String dietaryRestrictions) {
         this.dietaryRestrictions = dietaryRestrictions;
         return this;
     }
